@@ -9,15 +9,10 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Book List</h1>
+    <h1>Add book</h1>
 
-    This friendly message is coming from:
-    <table>
-    {% for book in books %}
-    <tr>
-	    <td>{{ book.title }}</td>
-    </tr>
-    {% endfor %}
-    </table>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
 </div>
 {% endblock %}
