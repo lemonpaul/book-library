@@ -11,13 +11,27 @@
 <div class="example-wrapper">
     <h1>Book List</h1>
 
-    This friendly message is coming from:
     <table>
-    {% for book in books %}
-    <tr>
-	    <td>{{ book.title }}</td>
-    </tr>
-    {% endfor %}
+        <thead>
+            <tr>
+                <td>Title</td>
+                <td>Author</td>
+                <td>Cover</td>
+                <td>File</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for book in books %}
+            <tr>
+	            <td><a href="{{ path('view', {'id': book.id}) }}">{{ book.title }}</a></td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.cover }}</td>
+                <td>{{ book.file }}</td>
+                <td><a href="{{ path('delete', {'id': book.id}) }}">Delete</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
     </table>
 </div>
 {% endblock %}
