@@ -18,6 +18,7 @@
                 <td>Author</td>
                 <td>Cover</td>
                 <td>File</td>
+                <td>Date</td>
                 <td>Action</td>
             </tr>
         </thead>
@@ -28,7 +29,8 @@
                 <td>{{ book.author }}</td>
                 <td>{{ book.cover }}</td>
                 <td>{{ book.file }}</td>
-                <td><a href="{{ path('delete', {'id': book.id}) }}">Delete</a></td>
+                <td>{{ book.date|date("d/m/Y") }}</td>
+                <td><a href="{{ path('edit', {'id': book.id}) }}">Edit</a><a href="{{ path('delete', {'id': book.id}) }}">Delete</a></td>
             </tr>
         {% endfor %}
         </tbody>

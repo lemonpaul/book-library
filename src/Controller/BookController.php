@@ -72,7 +72,7 @@ class BookController extends AbstractController
             if ($cover->guessExtension()) {
                 $coverName .= '.'.$cover->guessExtension();
             }
-            $cover->move("%kernel.project_dir%/public/uploads/covers", $coverName);
+            $cover->move("uploads/covers", $coverName);
             $book->setCover($coverName);
             $file = $form->get('file')->getData();
             if ($book->getDownload() && $file) {
@@ -80,11 +80,34 @@ class BookController extends AbstractController
                 if ($file->guessExtension()) {
                     $fileName .= '.'.$file->guessExtension();
                 }
-                $file->move("%kernel.project_dir%/public/uploads/files", $fileName);
+                $file->move("uploads/files", $fileName);
                 $book->setFile($fileName);
             }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($book);
+            $entityManager->flush();
+            return $this->redirectToRoute('index');
+        }
+
+        return $this->render('book/new.html.twig', array(
+            'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * @Route("/edit/{id}", name="edit")
+     */
+    public function edit($id)
+    {
+        $book = $this->getDoctrine()
+            ->getRepository(Book::class)
+            ->find($id);
+
+        $form = $this->createForm(BookType::class, $book);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
             return $this->redirectToRoute('index');
         }

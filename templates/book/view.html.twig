@@ -10,10 +10,10 @@
 
 <div class="example-wrapper">
     <h1>{{ book.title }}</h1>
-    <i>{{ book.author }}</i>
-    <img src="{{ book.cover }}"/>
+    <p><i>{{ book.author }}</i></p>
+    <img src="/uploads/covers/{{ book.cover }}"/>
     {% if book.download %}
-        <a href="{{ book.file }}">Download</a>
+        <a href="/uploads/files/{{ book.file }}">Download</a>
     {% endif %}
 </div>
 {% endblock %}

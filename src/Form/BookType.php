@@ -21,7 +21,7 @@ class BookType extends AbstractType
             ->add('cover', FileType::class)
             ->add('file', FileType::class, array('required' => false))
             ->add('date', DateType::class)
-            ->add('download', CheckboxType::class)
+            ->add('download', CheckboxType::class, array('required' => false))
             ->add('save', SubmitType::class, array('label' => 'Add Book'));
     }
 
