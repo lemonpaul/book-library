@@ -7,7 +7,8 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Book;
-use App\Form\BookType;
+use App\Form\AddBookType;
+use App\Form\EditBookType;
 
 class BookController extends AbstractController
 {
@@ -46,6 +47,14 @@ class BookController extends AbstractController
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
             ->find($id);
+        $cover = $book->getCover();
+        if ($cover) {
+            unlink("uploads/covers/".$cover);
+        }
+        $file = $book->getFile();
+        if ($file) {
+            unlink("uploads/files/".$file);
+        }
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($book);
         $entityManager->flush();
@@ -58,22 +67,21 @@ class BookController extends AbstractController
     public function new(Request $request)
     {
         $book = new Book();
-        $book->setTitle('New book');
-        $book->setAuthor('Author');
-        $book->setDate(new \DateTime('today'));
-        $book->setDownload(false);
 
-        $form = $this->createForm(BookType::class, $book);
+        $form = $this->createForm(AddBookType::class, $book);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $cover = $form->get('cover')->getData();
-            $coverName = md5(uniqid());
-            if ($cover->guessExtension()) {
-                $coverName .= '.'.$cover->guessExtension();
+            if ($cover)
+            {
+                $coverName = md5(uniqid());
+                if ($cover->guessExtension()) {
+                    $coverName .= '.'.$cover->guessExtension();
+                }
+                $cover->move("uploads/covers", $coverName);
+                $book->setCover($coverName);
             }
-            $cover->move("uploads/covers", $coverName);
-            $book->setCover($coverName);
             $file = $form->get('file')->getData();
             if ($book->getDownload() && $file) {
                 $fileName = md5(uniqid());
@@ -97,13 +105,13 @@ class BookController extends AbstractController
     /**
      * @Route("/edit/{id}", name="edit")
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
             ->find($id);
 
-        $form = $this->createForm(BookType::class, $book);
+        $form = $this->createForm(EditBookType::class, $book);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -112,7 +120,7 @@ class BookController extends AbstractController
             return $this->redirectToRoute('index');
         }
 
-        return $this->render('book/new.html.twig', array(
+        return $this->render('book/edit.html.twig', array(
             'form' => $form->createView()
         ));
     }
