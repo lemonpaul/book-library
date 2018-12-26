@@ -12,7 +12,19 @@
     <h1>Edit Book</h1>
 
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.author) }}
+        {{ form_row(form.date) }}
+        {{ form_row(form.download) }}
+        {% if book.cover %}
+            <img src="/uploads/covers/{{ book.cover }}"/>
+        {% endif %}
+        {{ form_row(form.deleteCover) }}
+        {% if book.file %}
+            <p>{{ book.file }}</p>
+        {% endif %}
+        {{ form_row(form.deleteFile) }}
+        {{ form_row(form.save) }}
     {{ form_end(form) }}
 </div>
 {% endblock %}

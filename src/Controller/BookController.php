@@ -67,6 +67,7 @@ class BookController extends AbstractController
     public function new(Request $request)
     {
         $book = new Book();
+        $book->setDate(new \DateTime('today'));
 
         $form = $this->createForm(AddBookType::class, $book);
         $form->handleRequest($request);
@@ -115,13 +116,41 @@ class BookController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->flush();
-            return $this->redirectToRoute('index');
+            if ($form->get('deleteCover')->isClicked()) {
+                $cover = $book->getCover();
+                if ($cover) {
+                    unlink("uploads/covers/".$cover);
+                }
+                $book->setCover('');
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->flush();
+                return $this->render('book/edit.html.twig', array(
+                    'form' => $form->createView(),
+                    'book' => $book
+                ));
+            } elseif ($form->get('deleteFile')->isClicked()) {
+                $file = $book->getFile();
+                if ($file) {
+                    unlink("uploads/files/".$file);
+                }
+                $book->setFile('');
+                $book->setDownload(false);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->flush();
+                return $this->render('book/edit.html.twig', array(
+                    'form' => $form->createView(),
+                    'book' => $book
+                ));
+            } else {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->flush();
+                return $this->redirectToRoute('index');
+            }
         }
 
         return $this->render('book/edit.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'book' => $book
         ));
     }
 }

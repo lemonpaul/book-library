@@ -20,6 +20,8 @@ class EditBookType extends AbstractType
             ->add('author', TextType::class)
             ->add('date', DateType::class)
             ->add('download', CheckboxType::class, array('required' => false))
+            ->add('deleteCover', SubmitType::class, array('label' => 'Delete Cover'))
+            ->add('deleteFile', SubmitType::class, array('label' => 'Delete File'))
             ->add('save', SubmitType::class, array('label' => 'Save Book'));
     }
 
