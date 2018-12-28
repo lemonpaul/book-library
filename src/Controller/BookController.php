@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 use App\Entity\Book;
 use App\Form\AddBookType;
 use App\Form\EditBookType;
@@ -17,9 +18,13 @@ class BookController extends AbstractController
      */
     public function index()
     {
-    	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
+        $cache = new FilesystemCache();
+        if (!$cache->has('books.all')) {
+    	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
+            $cache->set('books.all', $bookRepository->findAll());
+        }
 
-        $books = $bookRepository->findAll();
+        $books = $cache->get('books.all');
 
         return $this->render('book/index.html.twig', [
             'books' => $books,
@@ -44,12 +49,14 @@ class BookController extends AbstractController
      */
     public function delete($id)
     {
+        $cache = new FilesystemCache();
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
             ->find($id);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($book);
         $entityManager->flush();
+        $cache->delete('books.all');
         return $this->redirectToRoute('index');
     }
 
@@ -58,6 +65,7 @@ class BookController extends AbstractController
      */
     public function new(Request $request)
     {
+        $cache = new FilesystemCache();
         $book = new Book();
         $book->setDate(new \DateTime('today'));
 
@@ -87,6 +95,7 @@ class BookController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($book);
             $entityManager->flush();
+            $cache->delete('books.all');
             return $this->redirectToRoute('index');
         }
 
@@ -100,6 +109,7 @@ class BookController extends AbstractController
      */
     public function edit($id, Request $request)
     {
+        $cache = new FilesystemCache();
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
             ->find($id);
@@ -116,6 +126,7 @@ class BookController extends AbstractController
                 $book->setCover('');
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->flush();
+                $cache->delete('books.all');
                 return $this->render('book/edit.html.twig', array(
                     'form' => $form->createView(),
                     'book' => $book
@@ -129,6 +140,7 @@ class BookController extends AbstractController
                 $book->setDownload(false);
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->flush();
+                $cache->delete('books.all');
                 return $this->render('book/edit.html.twig', array(
                     'form' => $form->createView(),
                     'book' => $book
@@ -136,6 +148,7 @@ class BookController extends AbstractController
             } else {
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->flush();
+                $cache->delete('books.all');
                 return $this->redirectToRoute('index');
             }
         }
