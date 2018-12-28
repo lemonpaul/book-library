@@ -49,6 +49,7 @@ class BookController extends AbstractController
      */
     public function delete($id)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $cache = new FilesystemCache();
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
@@ -65,6 +66,7 @@ class BookController extends AbstractController
      */
     public function new(Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $cache = new FilesystemCache();
         $book = new Book();
         $book->setDate(new \DateTime('today'));
@@ -109,6 +111,7 @@ class BookController extends AbstractController
      */
     public function edit($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $cache = new FilesystemCache();
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
