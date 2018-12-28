@@ -47,14 +47,6 @@ class BookController extends AbstractController
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
             ->find($id);
-        $cover = $book->getCover();
-        if ($cover) {
-            unlink("uploads/covers/".$cover);
-        }
-        $file = $book->getFile();
-        if ($file) {
-            unlink("uploads/files/".$file);
-        }
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($book);
         $entityManager->flush();
