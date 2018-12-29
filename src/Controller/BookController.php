@@ -57,9 +57,9 @@ class BookController extends AbstractController
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
             ->find($id);
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($book);
-        $entityManager->flush();
+        $bookManager = $this->getDoctrine()->getManager();
+        $bookManager->remove($book);
+        $bookManager->flush();
         $cache->delete('books.all');
         return $this->redirectToRoute('index');
     }
@@ -97,9 +97,9 @@ class BookController extends AbstractController
                 $file->move("uploads/files", $fileName);
                 $book->setFile($fileName);
             }
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($book);
-            $entityManager->flush();
+            $bookManager = $this->getDoctrine()->getManager();
+            $bookManager->persist($book);
+            $bookManager->flush();
             $cache->delete('books.all');
             return $this->redirectToRoute('index');
         }
@@ -130,8 +130,8 @@ class BookController extends AbstractController
                     unlink("uploads/covers/".$cover);
                 }
                 $book->setCover('');
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
+                $bookManager = $this->getDoctrine()->getManager();
+                $bookManager->flush();
                 $cache->delete('books.all');
                 return $this->render('book/edit.html.twig', array(
                     'form' => $form->createView(),
@@ -144,16 +144,16 @@ class BookController extends AbstractController
                 }
                 $book->setFile('');
                 $book->setDownload(false);
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
+                $bookManager = $this->getDoctrine()->getManager();
+                $bookManager->flush();
                 $cache->delete('books.all');
                 return $this->render('book/edit.html.twig', array(
                     'form' => $form->createView(),
                     'book' => $book
                 ));
             } else {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
+                $bookManager = $this->getDoctrine()->getManager();
+                $bookManager->flush();
                 $cache->delete('books.all');
                 return $this->redirectToRoute('index');
             }
@@ -182,6 +182,128 @@ class BookController extends AbstractController
         }
 
         $books = $cache->get('books.all');
+
+        $jsonContent = $serializer->serialize($books, 'json');
+
+        return JsonResponse::fromJsonString($jsonContent);
+    }
+
+    /**
+     * @Route("/api/v1/books/{id}/edit", name="api_edit")
+     */
+    public function api_edit($id, Request $request)
+    {
+        $cache = new FilesystemCache();
+        $book = $this->getDoctrine()
+            ->getRepository(Book::class)
+            ->find($id);
+
+        if ($book) {
+            $title = $request->query->get('title');
+            if ($title) {
+                $book->setTitle($title);
+                $cache->delete('books.all');
+            }
+
+            $author = $request->query->get('author');
+            if ($author) {
+                $book->setAuthor($author);
+                $cache->delete('books.all');
+            }
+
+            $download = $request->query->get('download');
+            if (null !== $download) {
+                if ($download == "true") {
+                    $book->setDownload(true);
+                } elseif ($download == "false") {
+                    $book->setDownload(false);
+                }
+                $cache->delete('books.all');
+            }
+
+            $date = $request->query->get('date');
+            if ($date) {
+                $book->setDate(new \DateTime($date));
+                $cache->delete('books.all');
+            }
+        }
+
+        $bookManager = $this->getDoctrine()->getManager();
+        $bookManager->flush();
+
+        if (!$cache->has('books.all')) {
+    	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
+            $cache->set('books.all', $bookRepository->findAll());
+        }
+
+        $books = $cache->get('books.all');
+
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new BookNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $jsonContent = $serializer->serialize($books, 'json');
+
+        return JsonResponse::fromJsonString($jsonContent);
+    }
+
+    /**
+     * @Route("/api/v1/books/add", name="api_add")
+     */
+    public function api_add(Request $request)
+    {
+        $cache = new FilesystemCache();
+
+        $book = new Book();
+        $book->setTitle("Title");
+        $book->setAuthor("Author");
+        $book->setDate(new \DateTime('today'));
+        $book->setDownload(false);
+
+        $title = $request->query->get('title');
+        if ($title) {
+            $book->setTitle($title);
+            $cache->delete('books.all');
+        }
+
+        $author = $request->query->get('author');
+        if ($author) {
+            $book->setAuthor($author);
+            $cache->delete('books.all');
+        }
+
+        $download = $request->query->get('download');
+        if (null !== $download) {
+            if ($download == "true") {
+                $book->setDownload(true);
+            } elseif ($download == "false") {
+                $book->setDownload(false);
+            }
+            $cache->delete('books.all');
+        }
+
+        $date = $request->query->get('date');
+        if ($date) {
+            $book->setDate(new \DateTime($date));
+            $cache->delete('books.all');
+        }
+
+        $bookManager = $this->getDoctrine()->getManager();
+        $bookManager->persist($book);
+        $bookManager->flush();
+
+        if (!$cache->has('books.all')) {
+    	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
+            $cache->set('books.all', $bookRepository->findAll());
+        }
+
+        $books = $cache->get('books.all');
+
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new BookNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
 
         $jsonContent = $serializer->serialize($books, 'json');
 
