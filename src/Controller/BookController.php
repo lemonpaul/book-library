@@ -89,7 +89,7 @@ class BookController extends AbstractController
                 $book->setCover($coverName);
             }
             $file = $form->get('file')->getData();
-            if ($book->getDownload() && $file) {
+            if ($file) {
                 $fileName = md5(uniqid());
                 if ($file->guessExtension()) {
                     $fileName .= '.'.$file->guessExtension();
