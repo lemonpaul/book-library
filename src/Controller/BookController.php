@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use App\Serializer\BookNormalizer;
 use App\Entity\Book;
 use App\Form\AddBookType;
 use App\Form\EditBookType;
@@ -121,7 +124,7 @@ class BookController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('deleteCover')->isClicked()) {
+            if ($form->get('delete_cover')->isClicked()) {
                 $cover = $book->getCover();
                 if ($cover) {
                     unlink("uploads/covers/".$cover);
@@ -134,7 +137,7 @@ class BookController extends AbstractController
                     'form' => $form->createView(),
                     'book' => $book
                 ));
-            } elseif ($form->get('deleteFile')->isClicked()) {
+            } elseif ($form->get('delete_file')->isClicked()) {
                 $file = $book->getFile();
                 if ($file) {
                     unlink("uploads/files/".$file);
@@ -160,5 +163,28 @@ class BookController extends AbstractController
             'form' => $form->createView(),
             'book' => $book
         ));
+    }
+
+    /**
+     * @Route("/api/v1/books", name="api_index")
+     */
+    public function api_index(Request $request)
+    {
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new BookNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $cache = new FilesystemCache();
+        if (!$cache->has('books.all')) {
+    	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
+            $cache->set('books.all', $bookRepository->findAll());
+        }
+
+        $books = $cache->get('books.all');
+
+        $jsonContent = $serializer->serialize($books, 'json');
+
+        return JsonResponse::fromJsonString($jsonContent);
     }
 }

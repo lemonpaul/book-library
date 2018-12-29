@@ -18,7 +18,7 @@ class AddBookType extends AbstractType
     {
         $builder->add('title', TextType::class)
             ->add('author', TextType::class)
-            ->add('cover', FileType::class, array('required' => false))
+            ->add('cover', FileType::class)
             ->add('file', FileType::class, array('required' => false))
             ->add('date', DateType::class)
             ->add('download', CheckboxType::class, array('required' => false))

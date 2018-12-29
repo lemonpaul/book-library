@@ -18,10 +18,10 @@ class EditBookType extends AbstractType
     {
         $builder->add('title', TextType::class)
             ->add('author', TextType::class)
-            ->add('date', DateType::class)
+            ->add('date', DateType::class, array('format' => 'yyyy-MM-dd'))
             ->add('download', CheckboxType::class, array('required' => false))
-            ->add('deleteCover', SubmitType::class, array('label' => 'Delete Cover'))
-            ->add('deleteFile', SubmitType::class, array('label' => 'Delete File'))
+            ->add('delete_cover', SubmitType::class, array('label' => 'Delete Cover'))
+            ->add('delete_file', SubmitType::class, array('label' => 'Delete File'))
             ->add('save', SubmitType::class, array('label' => 'Save Book'));
     }
 
