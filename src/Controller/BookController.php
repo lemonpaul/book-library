@@ -170,6 +170,12 @@ class BookController extends AbstractController
      */
     public function api_index(Request $request)
     {
+        $apiKey = $this->getParameter('api_key');
+
+        if ($request->query->get('api_key') !== $apiKey) {
+            return JsonResponse::fromJsonString('{"error": "AccessDenied"}');
+        }
+
         $encoders = array(new JsonEncoder());
         $normalizers = array(new BookNormalizer());
 
@@ -193,6 +199,12 @@ class BookController extends AbstractController
      */
     public function api_edit($id, Request $request)
     {
+        $apiKey = $this->getParameter('api_key');
+
+        if ($request->query->get('api_key') !== $apiKey) {
+            return JsonResponse::fromJsonString('{"error": "AccessDenied"}');
+        }
+
         $cache = new FilesystemCache();
         $book = $this->getDoctrine()
             ->getRepository(Book::class)
@@ -253,6 +265,12 @@ class BookController extends AbstractController
      */
     public function api_add(Request $request)
     {
+        $apiKey = $this->getParameter('api_key');
+
+        if ($request->query->get('api_key') !== $apiKey) {
+            return JsonResponse::fromJsonString('{"error": "AccessDenied"}');
+        }
+
         $cache = new FilesystemCache();
 
         $book = new Book();
