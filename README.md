@@ -9,14 +9,14 @@ Installation
 
 1. Install composer dependencies:
 
-composer install
+  composer install
 
 2. Make and run migrations:
 
-bin/console make:migration
+  bin/console make:migration
 
-bin/console doctrine:migrations:migrate
+  bin/console doctrine:migrations:migrate
 
 3. Create admin user:
 
-php bin/console make:fixtures
+  php bin/console make:fixtures
