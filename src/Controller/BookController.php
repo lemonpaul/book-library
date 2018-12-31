@@ -65,9 +65,9 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="new")
+     * @Route("/add", name="add")
      */
-    public function new(Request $request)
+    public function add(Request $request)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $cache = new FilesystemCache();
@@ -104,7 +104,7 @@ class BookController extends AbstractController
             return $this->redirectToRoute('index');
         }
 
-        return $this->render('book/new.html.twig', array(
+        return $this->render('book/add.html.twig', array(
             'form' => $form->createView()
         ));
     }

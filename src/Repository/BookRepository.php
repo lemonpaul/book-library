@@ -19,6 +19,11 @@ class BookRepository extends ServiceEntityRepository
         parent::__construct($registry, Book::class);
     }
 
+    public function findAll()
+    {
+        return $this->findBy(array(), array('date' => 'ASC'));
+    }
+
     // /**
     //  * @return Book[] Returns an array of Book objects
     //  */
