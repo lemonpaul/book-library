@@ -19,4 +19,4 @@ Installation
 
 3. Create admin user:
 
-  php bin/console make:fixtures
+  php bin/console doctrine:fixtures:load
