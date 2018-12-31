@@ -39,9 +39,7 @@ class BookController extends AbstractController
      */
     public function view($id)
     {
-        $book = $this->getDoctrine()
-            ->getRepository(Book::class)
-            ->find($id);
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         return $this->render('book/view.html.twig', [
             'book' => $book,
         ]);
@@ -79,14 +77,13 @@ class BookController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $cover = $form->get('cover')->getData();
-            if ($cover)
-            {
+            if ($cover) {
                 $coverName = md5(uniqid());
                 if ($cover->guessExtension()) {
                     $coverName .= '.'.$cover->guessExtension();
                 }
-                $cover->move("uploads/covers", $coverName);
-                $book->setCover($coverName);
+                $cover->move('uploads/covers', $coverName);
+                $book->setCover('uploads/covers/'.$coverName);
             }
             $file = $form->get('file')->getData();
             if ($file) {
@@ -94,8 +91,8 @@ class BookController extends AbstractController
                 if ($file->guessExtension()) {
                     $fileName .= '.'.$file->guessExtension();
                 }
-                $file->move("uploads/files", $fileName);
-                $book->setFile($fileName);
+                $file->move('uploads/files', $fileName);
+                $book->setFile('uploads/files/'.$fileName);
             }
             $bookManager = $this->getDoctrine()->getManager();
             $bookManager->persist($book);
@@ -127,7 +124,7 @@ class BookController extends AbstractController
             if ($form->get('delete_cover')->isClicked()) {
                 $cover = $book->getCover();
                 if ($cover) {
-                    unlink("uploads/covers/".$cover);
+                    unlink($cover);
                 }
                 $book->setCover('');
                 $bookManager = $this->getDoctrine()->getManager();
@@ -140,7 +137,7 @@ class BookController extends AbstractController
             } elseif ($form->get('delete_file')->isClicked()) {
                 $file = $book->getFile();
                 if ($file) {
-                    unlink("uploads/files/".$file);
+                    unlink($file);
                 }
                 $book->setFile('');
                 $book->setDownload(false);
@@ -206,9 +203,7 @@ class BookController extends AbstractController
         }
 
         $cache = new FilesystemCache();
-        $book = $this->getDoctrine()
-            ->getRepository(Book::class)
-            ->find($id);
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
 
         if ($book) {
             $title = $request->query->get('title');

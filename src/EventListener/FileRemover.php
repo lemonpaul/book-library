@@ -18,11 +18,11 @@ class FileRemover
         $entityManager = $args->getObjectManager();
         $cover = $entity->getCover();
         if ($cover) {
-            unlink("uploads/covers/".$cover);
+            unlink($cover);
         }
         $file = $entity->getFile();
         if ($file) {
-            unlink("uploads/files/".$file);
+            unlink($file);
         }
     }
 }

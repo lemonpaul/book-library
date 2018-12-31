@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Book library{% endblock %}
+{% block title %}Book Library{% endblock %}
 
 {% block body %}
 <div>
@@ -11,7 +11,7 @@
     {% endif %}
     {% if book.download %}
         {% if book.file %}
-            <p><a href="/uploads/files/{{ book.file }}">Download</a></p>
+            <p><a href="/{{ book.file }}">Download</a></p>
         {% endif %}
     {% endif %}
 </div>

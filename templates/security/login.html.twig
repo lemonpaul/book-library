@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Book Library{% endblock %}
 
 {% block body %}
 <form method="post">
@@ -8,7 +8,7 @@
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <h1>Please sign in</h1>
+    <h1>Login</h1>
     <label for="inputUsername">Username</label>
     <input type="text" value="{{ last_username }}" name="username" id="inputUsername" placeholder="Username" required autofocus>
     <label for="inputPassword">Password</label>
