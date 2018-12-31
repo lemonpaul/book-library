@@ -2,7 +2,10 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 
 class BookControllerTest extends WebTestCase
 {
