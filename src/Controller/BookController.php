@@ -29,9 +29,7 @@ class BookController extends AbstractController
             $cache->set('books.all', $bookRepository->findAll());
         }
         $books = $cache->get('books.all');
-        return $this->render('book/index.html.twig', [
-            'books' => $books,
-        ]);
+        return $this->render('book/index.html.twig', ['books' => $books]);
     }
 
     /**
@@ -40,9 +38,7 @@ class BookController extends AbstractController
     public function view($id)
     {
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
-        return $this->render('book/view.html.twig', [
-            'book' => $book,
-        ]);
+        return $this->render('book/view.html.twig', ['book' => $book]);
     }
 
     /**
@@ -51,13 +47,11 @@ class BookController extends AbstractController
     public function delete($id)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $cache = new FilesystemCache();
-        $book = $this->getDoctrine()
-            ->getRepository(Book::class)
-            ->find($id);
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         $bookManager = $this->getDoctrine()->getManager();
         $bookManager->remove($book);
         $bookManager->flush();
+        $cache = new FilesystemCache();
         $cache->delete('books.all');
         return $this->redirectToRoute('index');
     }
@@ -68,7 +62,6 @@ class BookController extends AbstractController
     public function add(Request $request, CoverUploader $coverUploader, FileUploader $fileUploader)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $cache = new FilesystemCache();
         $book = new Book();
         $book->setDate(new \DateTime('today'));
         $form = $this->createForm(AddBookType::class, $book);
@@ -87,12 +80,11 @@ class BookController extends AbstractController
             $bookManager = $this->getDoctrine()->getManager();
             $bookManager->persist($book);
             $bookManager->flush();
+            $cache = new FilesystemCache();
             $cache->delete('books.all');
             return $this->redirectToRoute('index');
         }
-        return $this->render('book/add.html.twig', array(
-            'form' => $form->createView()
-        ));
+        return $this->render('book/add.html.twig', array('form' => $form->createView()));
     }
 
     /**
@@ -101,10 +93,7 @@ class BookController extends AbstractController
     public function edit($id, Request $request)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $cache = new FilesystemCache();
-        $book = $this->getDoctrine()
-            ->getRepository(Book::class)
-            ->find($id);
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         $form = $this->createForm(EditBookType::class, $book);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -116,11 +105,10 @@ class BookController extends AbstractController
                 $book->setCover('');
                 $bookManager = $this->getDoctrine()->getManager();
                 $bookManager->flush();
+                $cache = new FilesystemCache();
                 $cache->delete('books.all');
-                return $this->render('book/edit.html.twig', array(
-                    'form' => $form->createView(),
-                    'book' => $book
-                ));
+                return $this->render('book/edit.html.twig', array('form' => $form->createView(),
+                                                                  'book' => $book));
             } elseif ($form->get('delete_file')->isClicked()) {
                 $file = $book->getFile();
                 if ($file) {
@@ -130,22 +118,20 @@ class BookController extends AbstractController
                 $book->setDownload(false);
                 $bookManager = $this->getDoctrine()->getManager();
                 $bookManager->flush();
+                $cache = new FilesystemCache();
                 $cache->delete('books.all');
-                return $this->render('book/edit.html.twig', array(
-                    'form' => $form->createView(),
-                    'book' => $book
-                ));
+                return $this->render('book/edit.html.twig', array('form' => $form->createView(),
+                                                                  'book' => $book));
             } else {
                 $bookManager = $this->getDoctrine()->getManager();
                 $bookManager->flush();
+                $cache = new FilesystemCache();
                 $cache->delete('books.all');
                 return $this->redirectToRoute('index');
             }
         }
-        return $this->render('book/edit.html.twig', array(
-            'form' => $form->createView(),
-            'book' => $book
-        ));
+        return $this->render('book/edit.html.twig', array('form' => $form->createView(),
+                                                          'book' => $book));
     }
 
     /**
@@ -179,7 +165,6 @@ class BookController extends AbstractController
         if ($request->query->get('api_key') !== $apiKey) {
             return JsonResponse::fromJsonString('{"error": "AccessDenied"}');
         }
-        $cache = new FilesystemCache();
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         if ($book) {
             $title = $request->query->get('title');
@@ -205,11 +190,9 @@ class BookController extends AbstractController
         }
         $bookManager = $this->getDoctrine()->getManager();
         $bookManager->flush();
-        $cache->delete('books.all');
-        if (!$cache->has('books.all')) {
-    	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
-            $cache->set('books.all', $bookRepository->findAll());
-        }
+        $cache = new FilesystemCache();
+    	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
+        $cache->set('books.all', $bookRepository->findAll());
         $books = $cache->get('books.all');
         $encoders = array(new JsonEncoder());
         $normalizers = array(new BookNormalizer());
@@ -227,7 +210,6 @@ class BookController extends AbstractController
         if ($request->query->get('api_key') !== $apiKey) {
             return JsonResponse::fromJsonString('{"error": "AccessDenied"}');
         }
-        $cache = new FilesystemCache();
         $book = new Book();
         $book->setTitle("Title");
         $book->setAuthor("Author");
@@ -256,11 +238,10 @@ class BookController extends AbstractController
         $bookManager = $this->getDoctrine()->getManager();
         $bookManager->persist($book);
         $bookManager->flush();
+        $cache = new FilesystemCache();
         $cache->delete('books.all');
-        if (!$cache->has('books.all')) {
-    	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
-            $cache->set('books.all', $bookRepository->findAll());
-        }
+    	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
+        $cache->set('books.all', $bookRepository->findAll());
         $books = $cache->get('books.all');
         $encoders = array(new JsonEncoder());
         $normalizers = array(new BookNormalizer());
