@@ -9,7 +9,7 @@ class BookNormalizer implements NormalizerInterface
 {
     private $normalizer;
 
-    public function normalize($book, $format = null, array $context=array())
+    public function normalize($book, $format = null, array $context = array())
     {
         $data = array();
         $data['id'] = $book->getId();
@@ -17,10 +17,10 @@ class BookNormalizer implements NormalizerInterface
         $data['author'] = $book->getAuthor();
         $data['date'] = $book->getDate()->format('d/m/Y');
         if ($book->getCover()) {
-            $data['cover'] = '/uploads/covers/'.$book->getCover();
+            $data['cover'] = $book->getCover();
         }
         if ($book->getDownload()) {
-            $data['file'] = '/uploads/files/'.$book->getFile();
+            $data['file'] = $book->getFile();
         }
 
         return $data;
