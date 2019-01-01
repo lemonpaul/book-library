@@ -3,16 +3,18 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Cache\Simple\FilesystemCache;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use App\Serializer\BookNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use App\Entity\Book;
 use App\Form\AddBookType;
 use App\Form\EditBookType;
+use App\Serializer\BookNormalizer;
+use App\Service\CoverUploader;
+use App\Service\FileUploader;
 
 class BookController extends AbstractController
 {
@@ -65,7 +67,7 @@ class BookController extends AbstractController
     /**
      * @Route("/add", name="add")
      */
-    public function add(Request $request)
+    public function add(Request $request, CoverUploader $coverUploader, FileUploader $fileUploader)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $cache = new FilesystemCache();
@@ -78,21 +80,13 @@ class BookController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $cover = $form->get('cover')->getData();
             if ($cover) {
-                $coverName = md5(uniqid());
-                if ($cover->guessExtension()) {
-                    $coverName .= '.'.$cover->guessExtension();
-                }
-                $cover->move('uploads/covers', $coverName);
-                $book->setCover('uploads/covers/'.$coverName);
+                $coverName = $coverUploader->upload($cover);
+                $book->setCover($this->getParameter('covers_directory').'/'.$coverName);                $book->setCover('uploads/covers/'.$coverName);
             }
             $file = $form->get('file')->getData();
             if ($file) {
-                $fileName = md5(uniqid());
-                if ($file->guessExtension()) {
-                    $fileName .= '.'.$file->guessExtension();
-                }
-                $file->move('uploads/files', $fileName);
-                $book->setFile('uploads/files/'.$fileName);
+                $fileName = $fileUploader->upload($file);
+                $book->setFile($this->getParameter('files_directory').'/'.$fileName);
             }
             $bookManager = $this->getDoctrine()->getManager();
             $bookManager->persist($book);

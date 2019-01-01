@@ -6,6 +6,8 @@
 parameters:
     locale: 'en'
     api_key: '7b758957f2063eb16b781634eac6880c'
+    covers_directory: 'uploads/covers'
+    files_directory: 'uploads/files'
 
 services:
     # default configuration for services in *this* file
@@ -30,3 +32,11 @@ services:
     App\EventListener\FileRemover:
         tags:
             - { name: doctrine.event_listener, event: preRemove }
+
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%files_directory%'
+
+    App\Service\CoverUploader:
+        arguments:
+            $targetDirectory: '%covers_directory%'
