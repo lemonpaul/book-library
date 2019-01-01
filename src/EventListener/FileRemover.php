@@ -15,7 +15,6 @@ class FileRemover
             return;
         }
 
-        $entityManager = $args->getObjectManager();
         $cover = $entity->getCover();
         if ($cover) {
             unlink($cover);
