@@ -24,9 +24,10 @@ class BookController extends AbstractController
     public function index()
     {
         $cache = new FilesystemCache();
-        if (!$cache->has('books.all')) {
+        if (!$cache->has('books.all') || $cache->get('books.update')->diff(new \DateTime())->d >= 1) {
     	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
             $cache->set('books.all', $bookRepository->findAll());
+            $cache->set('books.update', new \DateTime());
         }
         $books = $cache->get('books.all');
         return $this->render('book/index.html.twig', ['books' => $books]);
@@ -147,9 +148,10 @@ class BookController extends AbstractController
         $normalizers = array(new BookNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
         $cache = new FilesystemCache();
-        if (!$cache->has('books.all')) {
+        if (!$cache->has('books.all') || $cache->get('books.update')->diff(new \DateTime())->d >= 1) {
     	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
             $cache->set('books.all', $bookRepository->findAll());
+            $cache->set('books.update', new \DateTime());
         }
         $books = $cache->get('books.all');
         $jsonContent = $serializer->serialize($books, 'json');
