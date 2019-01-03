@@ -1,22 +1,41 @@
-Dependencies:
-composer
-php7.2-xml
-php7.2-curl
-php7.2-mbstring
-php7.2-zip
+Book Library
+============
+
+The "Book Library" is a test application for symfony framework learning.
+
+Requirements
+------------
+
+  * PHP 7.2 or higher;
+  * PHP XML, cURL, mbstring, ZIP extensions enabled;
+  * and the [usual Symfony application requirements][1].
 
 Installation
+------------
 
-1. Install composer dependencies:
 
-  composer install
+```bash
+$ cd book-library/
+$ composer install
+$ php bin/console make:migration
+$ php bin/console doctrine:migrations:migrate
+$ php bin/console doctrine:fixtures:load
+```
 
-2. Make and run migrations:
+Usage
+-----
 
-  bin/console make:migration
+```bash
+$ cd book-library/
+$ php bin/console server:run
+```
 
-  bin/console doctrine:migrations:migrate
+Tests
+-----
 
-3. Create admin user:
+```bash
+$ cd book-library/
+$ ./bin/phpunit
+```
 
-  php bin/console doctrine:fixtures:load
+[1]: https://symfony.com/doc/current/reference/requirements.html
