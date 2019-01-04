@@ -71,7 +71,7 @@ class BookController extends AbstractController
             $cover = $form->get('cover')->getData();
             if ($cover) {
                 $coverName = $coverUploader->upload($cover);
-                $book->setCover($this->getParameter('covers_directory').'/'.$coverName);                $book->setCover('uploads/covers/'.$coverName);
+                $book->setCover($this->getParameter('covers_directory').'/'.$coverName);
             }
             $file = $form->get('file')->getData();
             if ($file) {
