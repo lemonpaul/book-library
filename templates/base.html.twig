@@ -10,13 +10,15 @@
     <body>
         {% block body %}
             {% block header %}
-                <a href="/">Book Library</a>
-                {% if app.user is not null %}
-                    {{ app.user.username }}
-                    <a href="/logout">Logout</a>
-                {% else %}
-                    <a href="/login">Login</a>
-                {% endif %}
+                <nav class="navbar bg-dark">
+                    <a class="navbar-brand mr-auto" href="/">Book Library</a>
+                    {% if app.user is not null %}
+                        <div class="navbar-text text-light">{{ app.user.username }}</div>
+                        <a class="navbar-nav ml-1" href="/logout">Logout</a>
+                    {% else %}
+                        <a class="navbar-nav" href="/login">Login</a>
+                    {% endif %}
+                </nav>
             {% endblock %}
             {% block main %}{% endblock %}
         {% endblock %}
