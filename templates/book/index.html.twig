@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for book in books %}
+        {% for book in books | slice((page-1)*5, 5) %}
             <tr>
 	            <td class="align-middle"><a href="{{ path('view', {'id': book.id}) }}">{{ book.title }}</a></td>
                 <td class="align-middle">{{ book.author }}</td>
@@ -31,5 +31,24 @@
         {% endfor %}
         </tbody>
     </table>
+    {% if pages > 1 %}
+    <nav>
+        <ul class="pagination">
+            <li class="page-item{% if page == 1 %} disabled{% endif %}">
+                <a class="page-link" href="{{ path('index', { 'page': page - 1 }) }}">Previous</a>
+            </li>
+            {% for i in 1..pages %}
+                {% if (page - loop.index)|abs < 2 %}
+                    <li class="page-item{% if page == loop.index %} active{% endif %}">
+                        <a class="page-link" href="{{ path('index', { 'page': loop.index }) }}">{{ loop.index }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            <li class="page-item {% if page == pages %} disabled{% endif %}}">
+                <a class="page-link" href="{{ path('index', { 'page': page + 1 }) }}">Next</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
 </div>
 {% endblock %}

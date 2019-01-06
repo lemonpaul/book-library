@@ -21,8 +21,13 @@ class BookController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->query->get('page')) {
+            $page = $request->query->get('page');
+        } else {
+            $page = 1;
+        }
         $cache = new FilesystemCache();
         if (!$cache->has('books.all') || $cache->get('books.update')->diff(new \DateTime())->d >= 1) {
     	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
@@ -30,7 +35,7 @@ class BookController extends AbstractController
             $cache->set('books.update', new \DateTime());
         }
         $books = $cache->get('books.all');
-        return $this->render('book/index.html.twig', ['books' => $books]);
+        return $this->render('book/index.html.twig', ['books' => $books, 'page' => $page, 'pages' => ceil(count($books)/5)]);
     }
 
     /**
