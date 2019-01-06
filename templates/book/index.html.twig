@@ -1,15 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Book Library{% endblock %}
-
-{% block body %}
-
-{% if app.user is not null %}
-    {{ app.user.username }}
-    <a href="/logout">Logout</a>
-{% else %}
-    <a href="/login">Login</a>
-{% endif %}
+{% block main %}
 <div>
     <h1>Book List</h1>
     <a href="/add">Add Book</a>
