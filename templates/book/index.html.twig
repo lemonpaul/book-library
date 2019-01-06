@@ -44,7 +44,7 @@
                     </li>
                 {% endif %}
             {% endfor %}
-            <li class="page-item {% if page == pages %} disabled{% endif %}}">
+            <li class="page-item {% if page == pages %} disabled{% endif %}">
                 <a class="page-link" href="{{ path('index', { 'page': page + 1 }) }}">Next</a>
             </li>
         </ul>
