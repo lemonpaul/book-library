@@ -32,23 +32,28 @@
         </tbody>
     </table>
     {% if pages > 1 %}
-    <nav>
-        <ul class="pagination">
-            <li class="page-item{% if page == 1 %} disabled{% endif %}">
-                <a class="page-link" href="{{ path('index', { 'page': page - 1 }) }}">Previous</a>
-            </li>
-            {% for i in 1..pages %}
-                {% if (page - loop.index)|abs < 2 %}
-                    <li class="page-item{% if page == loop.index %} active{% endif %}">
-                        <a class="page-link" href="{{ path('index', { 'page': loop.index }) }}">{{ loop.index }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-            <li class="page-item {% if page == pages %} disabled{% endif %}">
-                <a class="page-link" href="{{ path('index', { 'page': page + 1 }) }}">Next</a>
-            </li>
-        </ul>
-    </nav>
+    <div class="d-flex flex-row">
+        <div class="flex-grow-1">
+            Showing {{ (page-1)*5+1 }} to {% if page == pages %}{{ books|length }}{% else %}{{ (page-1)*5+5 }}{% endif %} of {{ books|length }} books
+        </div>
+        <nav>
+            <ul class="pagination">
+                <li class="page-item{% if page == 1 %} disabled{% endif %}">
+                    <a class="page-link" href="{{ path('index', { 'page': page - 1 }) }}">Previous</a>
+                </li>
+                {% for i in 1..pages %}
+                    {% if (page - loop.index)|abs < 2 %}
+                        <li class="page-item{% if page == loop.index %} active{% endif %}">
+                            <a class="page-link" href="{{ path('index', { 'page': loop.index }) }}">{{ loop.index }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if page == pages %} disabled{% endif %}">
+                    <a class="page-link" href="{{ path('index', { 'page': page + 1 }) }}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
     {% endif %}
 </div>
 {% endblock %}
