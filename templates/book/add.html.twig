@@ -2,52 +2,52 @@
 
 {% block main %}
 <div class="m-3">
-    <h1 class="text-center">Add Book</h1>
+    <h1 class="center">Add Book</h1>
     {{ form_start(form) }}
         <div class="row">
-            <div class="col text-right">
+            <div class="col-sm-6 label">
                 Title:
             </div>
-            <div class="col">
+            <div class="col-sm-6">
                 {{ form_widget(form.title) }}
             </div>
         </div>
         <div class="row">
-            <div class="col text-right">
+            <div class="col-sm-6 label">
                 Author:
             </div>
-            <div class="col">
+            <div class="col-sm-6">
                 {{ form_widget(form.author) }}
             </div>
         </div>
         <div class="row">
-            <div class="col text-center">
+            <div class="col-sm-12 center">
                 {{ form_errors(form.cover) }}
             </div>
         </div>
         <div class="row">
-            <div class="col text-right">
+            <div class="col-sm-6 label">
                 Cover file:
             </div>
-            <div class="col">
+            <div class="col-sm-6">
                 {{ form_widget(form.cover) }}
             </div>
         </div>
         <div class="row">
-            <div class="col text-center">
+            <div class="col-sm-12 center">
                 {{ form_errors(form.file) }}
             </div>
         </div>
         <div class="row">
-            <div class="col text-right">
+            <div class="col-sm-6 label">
                 Book file:
             </div>
-            <div class="col">
+            <div class="col-sm-6">
                 {{ form_widget(form.file) }}
             </div>
         </div>
         <div class="row">
-            <div class="col text-right">
+            <div class="col-sm-6 label">
                 Read date:
             </div>
             <div class="col">
@@ -55,15 +55,15 @@
             </div>
         </div>
         <div class="row">
-            <div class="col text-right">
+            <div class="col-sm-6 label">
                 Allow downloading:
             </div>
-            <div class="col">
+            <div class="col-sm-6">
                 {{ form_widget(form.download) }}
             </div>
         </div>
         <div class="row">
-            <div class="col text-center">
+            <div class="col-sm-12 center">
                 {{ form_widget(form.save, { attr: {class: "btn btn-primary"} }) }}
             </div>
         </div>

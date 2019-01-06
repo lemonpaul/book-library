@@ -1,1 +1,11 @@
 @import "~bootstrap/scss/bootstrap";
+
+@media (min-width: 576px)
+{
+    .label {
+        text-align: right;
+    }
+    .center {
+        text-align: center;
+    }
+}
