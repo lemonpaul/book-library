@@ -1,29 +1,31 @@
 {% extends 'base.html.twig' %}
 
 {% block main %}
-<div>
+<div class="m-3">
+    <a href="/add" class="btn btn-primary">Add Book</a>
     <h1>Book List</h1>
-    <a href="/add">Add Book</a>
-    <table>
+    <table class="table table-striped">
         <thead>
             <tr>
-                <td>Title</td>
-                <td>Author</td>
-                <td>Date</td>
-                <td>Action</td>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Date</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
         {% for book in books %}
             <tr>
-	            <td><a href="{{ path('view', {'id': book.id}) }}">{{ book.title }}</a></td>
-                <td>{{ book.author }}</td>
-                <td>{{ book.date|date("d/m/Y") }}</td>
-                <td>
-                {% if app.user is not null %}
-                    <a href="{{ path('edit', {'id': book.id}) }}">Edit</a>
-                    <a href="{{ path('delete', {'id': book.id}) }}">Delete</a>
-                {% endif %}
+	            <td class="align-middle"><a href="{{ path('view', {'id': book.id}) }}">{{ book.title }}</a></td>
+                <td class="align-middle">{{ book.author }}</td>
+                <td class="align-middle">{{ book.date|date("d/m/Y") }}</td>
+                <td class="align-middle">
+                    <div class="item-actions">
+                    {% if app.user is not null %}
+                        <a href="{{ path('edit', {'id': book.id}) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ path('delete', {'id': book.id}) }}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+                    </div>
                 </td>
             </tr>
         {% endfor %}

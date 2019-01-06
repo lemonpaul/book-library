@@ -1,23 +1,70 @@
 {% extends 'base.html.twig' %}
 
 {% block main %}
-<div>
-    <h1>Edit Book</h1>
-
+<div class="m-3">
+    <h1 class="text-center">Edit Book</h1>
     {{ form_start(form) }}
-        {{ form_row(form.title) }}
-        {{ form_row(form.author) }}
-        {{ form_row(form.date) }}
-        {{ form_row(form.download) }}
+    <div class="row">
+        <div class="col text-right">
+            Title:
+        </div>
+        <div class="col">
+            {{ form_widget(form.title) }}
+        </div>
+        </div>
+        <div class="row">
+            <div class="col text-right">
+                Author:
+            </div>
+            <div class="col">
+                {{ form_widget(form.author) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-right">
+                Read date:
+            </div>
+            <div class="col">
+                {{ form_widget(form.date) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-right">
+                Allow downloading:
+            </div>
+            <div class="col">
+                {{ form_widget(form.download) }}
+            </div>
+        </div>
         {% if book.cover %}
-            {{ cover(book.cover, 200, 200)|raw }}
+        <div class="row">
+            <div class="col text-center">
+                {{ cover(book.cover, 200, 200)|raw }}
+            </div>
+        </div>
         {% endif %}
-        {{ form_row(form.delete_cover) }}
+        <div class="row">
+            <div class="col text-center">
+                {{ form_widget(form.delete_cover, { attr: {class: "btn btn-danger"} }) }}
+            </div>
+        </div>
         {% if book.file %}
-            <p>{{ book.file }}</p>
+            <div class="row">
+                <div class="col text-center">
+                    {{ book.file }}
+                </div>
+            </div>
         {% endif %}
-        {{ form_row(form.delete_file) }}
-        {{ form_row(form.save) }}
+        <div class="row">
+            <div class="col text-center">
+                {{ form_widget(form.delete_file, { attr: {class: "btn btn-danger"} }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                {{ form_widget(form.save, { attr: {class: "btn btn-primary"} }) }}
+            </div>
+        </div>
     {{ form_end(form) }}
 </div>
 {% endblock %}

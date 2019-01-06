@@ -1,15 +1,27 @@
 {% extends 'base.html.twig' %}
 
 {% block main %}
-<div>
-    <h1>{{ book.title }}</h1>
-    <p><i>{{ book.author }}</i></p>
+<div class="m-3">
+    <h1 class="text-center">{{ book.title }}</h1>
+    <div class="row">
+        <div class="col text-center">
+            <i>{{ book.author }}</i>
+        </div>
+    </div>
     {% if book.cover %}
-        {{ cover(book.cover, 200, 200)|raw }}
+        <div class="row">
+            <div class="col text-center">
+                {{ cover(book.cover, 200, 200)|raw }}
+            </div>
+        </div>
     {% endif %}
     {% if book.download %}
         {% if book.file %}
-            <p><a href="/{{ book.file }}">Download</a></p>
+            <div class="row">
+                <div class="col text-center">
+                    <a href="/{{ book.file }}" class="btn btn-primary">Download</a>
+                </div>
+            </div>
         {% endif %}
     {% endif %}
 </div>
