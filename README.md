@@ -1,7 +1,7 @@
-Book Library
-============
+Personal Library
+================
 
-The "Book Library" is a test application for symfony framework learning.
+The "Personal Library" is a test application for symfony framework learning.
 
 Requirements
 ------------
