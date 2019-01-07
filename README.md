@@ -15,8 +15,10 @@ Installation
 
 
 ```bash
-$ cd book-library/
+$ cd personal-library/
 $ composer install
+$ yarn install
+$ yarn encore dev
 $ php bin/console make:migration
 $ php bin/console doctrine:migrations:migrate
 $ php bin/console doctrine:fixtures:load
@@ -26,7 +28,7 @@ Usage
 -----
 
 ```bash
-$ cd book-library/
+$ cd personal-library/
 $ php bin/console server:run
 ```
 
@@ -34,7 +36,7 @@ Tests
 -----
 
 ```bash
-$ cd book-library/
+$ cd personal-library/
 $ ./bin/phpunit
 ```
 

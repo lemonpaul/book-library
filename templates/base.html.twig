@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Book Library{% endblock %}</title>
+        <title>{% block title %}Personal Library{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -11,7 +11,7 @@
         {% block body %}
             {% block header %}
                 <nav class="navbar bg-dark">
-                    <a class="navbar-brand mr-auto" href="/">Book Library</a>
+                    <a class="navbar-brand mr-auto" href="/">Personal Library</a>
                     {% if app.user is not null %}
                         <div class="navbar-text text-light">{{ app.user.username }}</div>
                         <a class="navbar-nav ml-1" href="/logout">Logout</a>
