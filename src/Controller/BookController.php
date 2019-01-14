@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
@@ -51,7 +52,11 @@ class BookController extends AbstractController
     public function view($id)
     {
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
-        return $this->render('book/view.html.twig', ['book' => $book]);
+        if ($book) {
+            return $this->render('book/view.html.twig', ['book' => $book]);
+        } else {
+            throw $this->createNotFoundException('The book does not exist.');
+        }
     }
 
     /**
@@ -65,6 +70,9 @@ class BookController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
+        if (!$book) {
+            throw $this->createNotFoundException('The book does not exist.');
+        }
         $bookManager = $this->getDoctrine()->getManager();
         $bookManager->remove($book);
         $bookManager->flush();
@@ -124,6 +132,9 @@ class BookController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
+        if (!$book) {
+            throw $this->createNotFoundException('The book does not exist.');
+        }
         $form = $this->createForm(EditBookType::class, $book);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -193,7 +204,7 @@ class BookController extends AbstractController
     {
         $apiKey = $this->getParameter('api_key');
         if ($request->query->get('api_key') !== $apiKey) {
-            return JsonResponse::fromJsonString('{"error": "AccessDenied"}');
+            return JsonResponse(['error' => 'AccessDenied']);
         }
         $encoders = array(new JsonEncoder());
         $normalizers = array(new BookNormalizer());
