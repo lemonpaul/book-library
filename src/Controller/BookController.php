@@ -20,6 +20,10 @@ class BookController extends AbstractController
 {
     /**
      * @Route("/", name="index")
+     * 
+     * @param Request $request
+     * 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index(Request $request)
     {
@@ -39,6 +43,10 @@ class BookController extends AbstractController
 
     /**
      * @Route("/view/{id}", name="view")
+     * 
+     * @param integer $id
+     * 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function view($id)
     {
@@ -48,6 +56,10 @@ class BookController extends AbstractController
 
     /**
      * @Route("/delete/{id}", name="delete")
+     * 
+     * @param integer $id
+     * 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function delete($id)
     {
@@ -63,6 +75,12 @@ class BookController extends AbstractController
 
     /**
      * @Route("/add", name="add")
+     * 
+     * @param Request $request
+     * @param CoverUploader $coverUploader
+     * @param FileUploader $fileUploader
+     * 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function add(Request $request, CoverUploader $coverUploader, FileUploader $fileUploader)
     {
@@ -94,6 +112,11 @@ class BookController extends AbstractController
 
     /**
      * @Route("/edit/{id}", name="edit")
+     * 
+     * @param integer $id
+     * @param Request $request
+     * 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function edit($id, Request $request)
     {
@@ -141,6 +164,10 @@ class BookController extends AbstractController
 
     /**
      * @Route("/api/v1/books", name="apiIndex")
+     * 
+     * @param Request $request
+     * 
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function apiIndex(Request $request)
     {
@@ -163,6 +190,11 @@ class BookController extends AbstractController
 
     /**
      * @Route("/api/v1/books/{id}/edit", name="apiEdit")
+     * 
+     * @param integer $id
+     * @param Request $request
+     * 
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function apiEdit($id, Request $request)
     {
@@ -208,6 +240,10 @@ class BookController extends AbstractController
 
     /**
      * @Route("/api/v1/books/add", name="apiAdd")
+     * 
+     * @param Request $request
+     * 
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function apiAdd(Request $request)
     {
