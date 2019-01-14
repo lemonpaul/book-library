@@ -4,6 +4,7 @@ namespace App\Serializer;
 
 use App\Entity\Book;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class BookNormalizer implements NormalizerInterface
 {
@@ -16,11 +17,12 @@ class BookNormalizer implements NormalizerInterface
         $data['title'] = $book->getTitle();
         $data['author'] = $book->getAuthor();
         $data['date'] = $book->getDate()->format('d/m/Y');
+        $request = Request::createFromGlobals();
         if ($book->getCover()) {
-            $data['cover'] = '/'.$book->getCover();
+            $data['cover'] = $request->getSchemeAndHttpHost().'/'.$book->getCover();
         }
         if ($book->getDownload()) {
-            $data['file'] = '/'.$book->getFile();
+            $data['file'] = $request->getSchemeAndHttpHost().'/'.$book->getFile();
         }
 
         return $data;
