@@ -45,6 +45,19 @@
         {% endif %}
         <div class="row">
             <div class="col-sm-12 center">
+                {{ form_errors(form.cover) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 label">
+                Change cover file:
+            </div>
+            <div class="col-sm-6">
+                {{ form_widget(form.cover) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 center">
                 {{ form_widget(form.delete_cover, { attr: {class: "btn btn-danger"} }) }}
             </div>
         </div>
@@ -55,6 +68,19 @@
                 </div>
             </div>
         {% endif %}
+        <div class="row">
+            <div class="col-sm-12 center">
+                {{ form_errors(form.file) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 label">
+                Change book file:
+            </div>
+            <div class="col-sm-6">
+                {{ form_widget(form.file) }}
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-12 center">
                 {{ form_widget(form.delete_file, { attr: {class: "btn btn-danger"} }) }}

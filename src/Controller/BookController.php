@@ -115,10 +115,12 @@ class BookController extends AbstractController
      * 
      * @param integer $id
      * @param Request $request
+     * @param CoverUploader $coverUploader
+     * @param FileUploader $fileUploader
      * 
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit($id, Request $request)
+    public function edit($id, Request $request, CoverUploader $coverUploader, FileUploader $fileUploader)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
@@ -151,6 +153,24 @@ class BookController extends AbstractController
                 return $this->render('book/edit.html.twig', array('form' => $form->createView(),
                                                                   'book' => $book));
             } else {
+                $cover = $form->get('cover')->getData();
+                if ($cover) {
+                    $oldCover = $book->getCover();
+                    if ($oldCover) {
+                        unlink($oldCover);
+                    }
+                    $coverName = $coverUploader->upload($cover);
+                    $book->setCover($this->getParameter('covers_directory').'/'.$coverName);
+                }
+                $file = $form->get('file')->getData();
+                if ($file) {
+                    $oldFile = $book->getFile();
+                    if ($oldFile) {
+                        unlink($oldFile);
+                    }
+                    $fileName = $fileUploader->upload($file);
+                    $book->setFile($this->getParameter('files_directory').'/'.$fileName);
+                }
                 $bookManager = $this->getDoctrine()->getManager();
                 $bookManager->flush();
                 $cache = new FilesystemCache();
