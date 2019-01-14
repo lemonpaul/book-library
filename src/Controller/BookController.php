@@ -140,9 +140,9 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/api/v1/books", name="api_index")
+     * @Route("/api/v1/books", name="apiIndex")
      */
-    public function api_index(Request $request)
+    public function apiIndex(Request $request)
     {
         $apiKey = $this->getParameter('api_key');
         if ($request->query->get('api_key') !== $apiKey) {
@@ -162,9 +162,9 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/api/v1/books/{id}/edit", name="api_edit")
+     * @Route("/api/v1/books/{id}/edit", name="apiEdit")
      */
-    public function api_edit($id, Request $request)
+    public function apiEdit($id, Request $request)
     {
         $apiKey = $this->getParameter('api_key');
         if ($request->query->get('api_key') !== $apiKey) {
@@ -207,9 +207,9 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/api/v1/books/add", name="api_add")
+     * @Route("/api/v1/books/add", name="apiAdd")
      */
-    public function api_add(Request $request)
+    public function apiAdd(Request $request)
     {
         $apiKey = $this->getParameter('api_key');
         if ($request->query->get('api_key') !== $apiKey) {
