@@ -203,8 +203,8 @@ class BookController extends AbstractController
     public function apiIndex(Request $request)
     {
         $apiKey = $this->getParameter('api_key');
-        if ($request->query->get('api_key') !== $apiKey) {
-            return JsonResponse(['error' => 'AccessDenied']);
+        if ($request->query->get('apiKey') !== $apiKey) {
+            return JsonResponse::create(['error' => 'AccessDenied']);
         }
         $encoders = array(new JsonEncoder());
         $normalizers = array(new BookNormalizer());
@@ -230,8 +230,8 @@ class BookController extends AbstractController
     public function apiEdit($id, Request $request)
     {
         $apiKey = $this->getParameter('api_key');
-        if ($request->query->get('api_key') !== $apiKey) {
-            return JsonResponse::fromJsonString('{"error": "AccessDenied"}');
+        if ($request->query->get('apiKey') !== $apiKey) {
+            return JsonResponse::create(['success' => false, 'errors' => ['Access denied.']]);
         }
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         if ($book) {
@@ -255,18 +255,15 @@ class BookController extends AbstractController
             if ($date) {
                 $book->setDate(new \DateTime($date));
             }
+        } else {
+            return JsonResponse::create(['success' => false, 'errors' => ['The book does not exist.']]);
         }
         $bookManager = $this->getDoctrine()->getManager();
         $bookManager->flush();
         $cache = new FilesystemCache();
     	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
         $cache->set('books.all', $bookRepository->findAll(), 86400);
-        $books = $cache->get('books.all');
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new BookNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($books, 'json');
-        return JsonResponse::fromJsonString($jsonContent);
+        return JsonResponse::create(['success' => true]);
     }
 
     /**
@@ -279,21 +276,24 @@ class BookController extends AbstractController
     public function apiAdd(Request $request)
     {
         $apiKey = $this->getParameter('api_key');
-        if ($request->query->get('api_key') !== $apiKey) {
-            return JsonResponse::fromJsonString('{"error": "AccessDenied"}');
+        if ($request->query->get('apiKey') !== $apiKey) {
+            return JsonResponse::create(['success' => false, 'errors' => ['Access denied.']]);
         }
         $book = new Book();
-        $book->setTitle("Title");
-        $book->setAuthor("Author");
         $book->setDate(new \DateTime('today'));
         $book->setDownload(false);
+        $errors = array();
         $title = $request->query->get('title');
         if ($title) {
             $book->setTitle($title);
+        } else {
+            array_push($errors, 'The title is required');
         }
         $author = $request->query->get('author');
         if ($author) {
             $book->setAuthor($author);
+        } else {
+            array_push($errors, 'The author is required');
         }
         $download = $request->query->get('download');
         if (null !== $download) {
@@ -307,17 +307,16 @@ class BookController extends AbstractController
         if ($date) {
             $book->setDate(new \DateTime($date));
         }
+        if (!empty($errors)) {
+            return JsonResponse::create(['success' => false, 'errors' => $errors]);
+        }
         $bookManager = $this->getDoctrine()->getManager();
         $bookManager->persist($book);
         $bookManager->flush();
+        $id = $book->getId();
         $cache = new FilesystemCache();
     	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
         $cache->set('books.all', $bookRepository->findAll(), 86400);
-        $books = $cache->get('books.all');
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new BookNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($books, 'json');
-        return JsonResponse::fromJsonString($jsonContent);
+        return JsonResponse::create(['success' => true, 'id' => $id]);
     }
 }

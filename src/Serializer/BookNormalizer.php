@@ -17,10 +17,10 @@ class BookNormalizer implements NormalizerInterface
         $data['author'] = $book->getAuthor();
         $data['date'] = $book->getDate()->format('d/m/Y');
         if ($book->getCover()) {
-            $data['cover'] = $book->getCover();
+            $data['cover'] = '/'.$book->getCover();
         }
         if ($book->getDownload()) {
-            $data['file'] = $book->getFile();
+            $data['file'] = '/'.$book->getFile();
         }
 
         return $data;
