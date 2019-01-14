@@ -29,10 +29,9 @@ class BookController extends AbstractController
             $page = 1;
         }
         $cache = new FilesystemCache();
-        if (!$cache->has('books.all') || $cache->get('books.update')->diff(new \DateTime())->d >= 1) {
+        if (!$cache->has('books.all')) {
     	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
-            $cache->set('books.all', $bookRepository->findAll());
-            $cache->set('books.update', new \DateTime());
+            $cache->set('books.all', $bookRepository->findAll(), 86400);
         }
         $books = $cache->get('books.all');
         return $this->render('book/index.html.twig', ['books' => $books, 'page' => $page, 'pages' => ceil(count($books)/5)]);
@@ -153,10 +152,9 @@ class BookController extends AbstractController
         $normalizers = array(new BookNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
         $cache = new FilesystemCache();
-        if (!$cache->has('books.all') || $cache->get('books.update')->diff(new \DateTime())->d >= 1) {
+        if (!$cache->has('books.all')) {
     	    $bookRepository = $this->getDoctrine()->getRepository(Book::class);
-            $cache->set('books.all', $bookRepository->findAll());
-            $cache->set('books.update', new \DateTime());
+            $cache->set('books.all', $bookRepository->findAll(), 86400);
         }
         $books = $cache->get('books.all');
         $jsonContent = $serializer->serialize($books, 'json');
@@ -199,7 +197,7 @@ class BookController extends AbstractController
         $bookManager->flush();
         $cache = new FilesystemCache();
     	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
-        $cache->set('books.all', $bookRepository->findAll());
+        $cache->set('books.all', $bookRepository->findAll(), 86400);
         $books = $cache->get('books.all');
         $encoders = array(new JsonEncoder());
         $normalizers = array(new BookNormalizer());
@@ -246,9 +244,8 @@ class BookController extends AbstractController
         $bookManager->persist($book);
         $bookManager->flush();
         $cache = new FilesystemCache();
-        $cache->delete('books.all');
     	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
-        $cache->set('books.all', $bookRepository->findAll());
+        $cache->set('books.all', $bookRepository->findAll(), 86400);
         $books = $cache->get('books.all');
         $encoders = array(new JsonEncoder());
         $normalizers = array(new BookNormalizer());
