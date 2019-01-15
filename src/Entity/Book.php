@@ -53,6 +53,11 @@ class Book
      */
     private $download;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $fileName;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +131,18 @@ class Book
     public function setDownload(bool $download): self
     {
         $this->download = $download;
+
+        return $this;
+    }
+
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(?string $fileName): self
+    {
+        $this->fileName = $fileName;
 
         return $this;
     }

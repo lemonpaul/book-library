@@ -19,7 +19,7 @@
         {% if book.file %}
             <div class="row">
                 <div class="col text-center">
-                    <a href="/{{ book.file }}" class="btn btn-primary">Download</a>
+                    <a href="{{ path('download', {'id': book.id}) }}" class="btn btn-primary">Download</a>
                 </div>
             </div>
         {% endif %}

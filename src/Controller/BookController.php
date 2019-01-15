@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -105,6 +107,7 @@ class BookController extends AbstractController
             }
             $file = $form->get('file')->getData();
             if ($file) {
+                $book->setFileName($file->getClientOriginalName());
                 $fileName = $fileUploader->upload($file);
                 $book->setFile($this->getParameter('files_directory').'/'.$fileName);
             }
@@ -156,6 +159,7 @@ class BookController extends AbstractController
                     unlink($file);
                 }
                 $book->setFile('');
+                $book->setFileName('');
                 $book->setDownload(false);
                 $bookManager = $this->getDoctrine()->getManager();
                 $bookManager->flush();
@@ -179,6 +183,7 @@ class BookController extends AbstractController
                     if ($oldFile) {
                         unlink($oldFile);
                     }
+                    $book->setFileName($file->getClientOriginalName());
                     $fileName = $fileUploader->upload($file);
                     $book->setFile($this->getParameter('files_directory').'/'.$fileName);
                 }
@@ -194,6 +199,32 @@ class BookController extends AbstractController
     }
 
     /**
+     * @Route("/download/{id}", name="download")
+     * 
+     * @param integer $id
+     * 
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function download($id)
+    {
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
+        if (!$book) {
+            throw $this->createNotFoundException('The book does not exist.');
+        } elseif (!($book->getDownload())) {
+            throw $this->createAccessDeniedException('Access denied.');
+        }
+        $basePath = $this->getParameter('kernel.project_dir').'/public';
+        $filePath = $basePath.'/'.$book->getFile();
+        $fileName = $book->getFileName();
+        $response = new BinaryFileResponse($filePath);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $fileName
+        );
+        return $response;
+    }
+
+    /**
      * @Route("/api/v1/books", name="apiIndex")
      * 
      * @param Request $request
@@ -204,7 +235,7 @@ class BookController extends AbstractController
     {
         $apiKey = $this->getParameter('api_key');
         if ($request->query->get('apiKey') !== $apiKey) {
-            return JsonResponse::create(['error' => 'AccessDenied']);
+            return new JsonResponse(['error' => 'AccessDenied']);
         }
         $encoders = array(new JsonEncoder());
         $normalizers = array(new BookNormalizer());
@@ -231,7 +262,7 @@ class BookController extends AbstractController
     {
         $apiKey = $this->getParameter('api_key');
         if ($request->query->get('apiKey') !== $apiKey) {
-            return JsonResponse::create(['success' => false, 'errors' => ['Access denied.']]);
+            return new JsonResponse(['success' => false, 'errors' => ['Access denied.']]);
         }
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         if ($book) {
@@ -256,14 +287,14 @@ class BookController extends AbstractController
                 $book->setDate(new \DateTime($date));
             }
         } else {
-            return JsonResponse::create(['success' => false, 'errors' => ['The book does not exist.']]);
+            return new JsonResponse(['success' => false, 'errors' => ['The book does not exist.']]);
         }
         $bookManager = $this->getDoctrine()->getManager();
         $bookManager->flush();
         $cache = new FilesystemCache();
     	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
         $cache->set('books.all', $bookRepository->findAll(), 86400);
-        return JsonResponse::create(['success' => true]);
+        return new JsonResponse(['success' => true]);
     }
 
     /**
@@ -277,7 +308,7 @@ class BookController extends AbstractController
     {
         $apiKey = $this->getParameter('api_key');
         if ($request->query->get('apiKey') !== $apiKey) {
-            return JsonResponse::create(['success' => false, 'errors' => ['Access denied.']]);
+            return new JsonResponse(['success' => false, 'errors' => ['Access denied.']]);
         }
         $book = new Book();
         $book->setDate(new \DateTime('today'));
@@ -308,7 +339,7 @@ class BookController extends AbstractController
             $book->setDate(new \DateTime($date));
         }
         if (!empty($errors)) {
-            return JsonResponse::create(['success' => false, 'errors' => $errors]);
+            return new JsonResponse(['success' => false, 'errors' => $errors]);
         }
         $bookManager = $this->getDoctrine()->getManager();
         $bookManager->persist($book);
@@ -317,6 +348,6 @@ class BookController extends AbstractController
         $cache = new FilesystemCache();
     	$bookRepository = $this->getDoctrine()->getRepository(Book::class);
         $cache->set('books.all', $bookRepository->findAll(), 86400);
-        return JsonResponse::create(['success' => true, 'id' => $id]);
+        return new JsonResponse(['success' => true, 'id' => $id]);
     }
 }
