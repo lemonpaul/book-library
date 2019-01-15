@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploader
@@ -15,11 +16,15 @@ class FileUploader
 
     public function upload(UploadedFile $file)
     {
-        $fileName = md5(uniqid()).'.'.$file->guessExtension();
-
-        $file->move($this->getTargetDirectory(), $fileName);
-
-        return $fileName;
+        $fileSystem = new Filesystem();
+        $hash = md5(uniqid());
+        $subDirectory = substr($hash, 0, 2).'/'.substr($hash, 2, 2)
+                                           .'/'.substr($hash, 4, 2)
+                                           .'/'.substr($hash, 6, 2);
+        $fileSystem->mkdir($this->getTargetDirectory().'/'.$subDirectory);
+        $fileName = substr($hash, 8).'.'.$file->guessExtension();
+        $file->move($this->getTargetDirectory().'/'.$subDirectory, $fileName);
+        return $subDirectory.'/'.$fileName;
     }
 
     public function getTargetDirectory()
