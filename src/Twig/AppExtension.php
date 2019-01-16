@@ -18,8 +18,8 @@ class AppExtension extends AbstractExtension
 
     public function renderImage(string $uri, int $width, int $height)
     {
-        $cover = "<img src=\"/".$uri."\" width=\""
-            .$width."\"height=\"".$height."\"/>";
+        $cover = '<img src="/'.$uri.'" width="'
+            .$width.'" height="'.$height.'"/>';
         return $cover;
     }
 }

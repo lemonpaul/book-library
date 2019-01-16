@@ -23,6 +23,7 @@ class BookNormalizer implements NormalizerInterface
         }
         if ($book->getDownload()) {
             $data['file'] = $request->getSchemeAndHttpHost().'/'.$book->getFile();
+            $data['file_name'] = $book->getFileName();
         }
         return $data;
     }
