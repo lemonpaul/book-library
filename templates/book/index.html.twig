@@ -21,7 +21,7 @@
                 <td class="align-middle">{{ book.date|date("d/m/Y") }}</td>
                 <td class="align-middle">
                     <div class="item-actions">
-                    {% if app.user is not null %}
+                    {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('edit', {'id': book.id}) }}" class="btn btn-primary">Edit</a>
                         <a href="{{ path('delete', {'id': book.id}) }}" class="btn btn-danger">Delete</a>
                     {% endif %}

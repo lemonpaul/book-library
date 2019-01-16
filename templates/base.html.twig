@@ -12,7 +12,7 @@
             {% block header %}
                 <nav class="navbar bg-dark">
                     <a class="navbar-brand mr-auto" href="/">Personal Library</a>
-                    {% if app.user is not null %}
+                    {% if is_granted('ROLE_USER') %}
                         <div class="navbar-text text-light">{{ app.user.username }}</div>
                         <a class="navbar-nav ml-1" href="/logout">Logout</a>
                     {% else %}

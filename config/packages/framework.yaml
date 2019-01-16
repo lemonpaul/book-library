@@ -1,6 +1,7 @@
 framework:
     validation: { enabled: true, enable_annotations: true }
     secret: '%env(APP_SECRET)%'
+    translator:      { fallbacks: ["%locale%"] }
     #default_locale: en
     #csrf_protection: true
     #http_method_override: true
@@ -31,3 +32,5 @@ framework:
 
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
         #app: cache.adapter.apcu
+    templating:
+        engines: ['twig']

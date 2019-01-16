@@ -70,7 +70,6 @@ class BookController extends AbstractController
      */
     public function delete($id)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         if (!$book) {
             throw $this->createNotFoundException('The book does not exist.');
@@ -94,7 +93,6 @@ class BookController extends AbstractController
      */
     public function add(Request $request, CoverUploader $coverUploader, FileUploader $fileUploader)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $book = new Book();
         $book->setDate(new \DateTime('today'));
         $form = $this->createForm(AddBookType::class, $book);
@@ -133,7 +131,6 @@ class BookController extends AbstractController
      */
     public function edit($id, Request $request, CoverUploader $coverUploader, FileUploader $fileUploader)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         if (!$book) {
             throw $this->createNotFoundException('The book does not exist.');
