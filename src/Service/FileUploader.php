@@ -22,7 +22,7 @@ class FileUploader
                                            .'/'.substr($hash, 4, 2)
                                            .'/'.substr($hash, 6, 2);
         $fileSystem->mkdir($this->getTargetDirectory().'/'.$subDirectory);
-        $fileName = substr($hash, 8).'.'.$file->guessExtension();
+        $fileName = $hash.'.'.$file->guessExtension();
         $file->move($this->getTargetDirectory().'/'.$subDirectory, $fileName);
         return $subDirectory.'/'.$fileName;
     }

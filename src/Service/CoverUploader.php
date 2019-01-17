@@ -22,7 +22,7 @@ class CoverUploader
                                            .'/'.substr($hash, 4, 2)
                                            .'/'.substr($hash, 6, 2);
         $fileSystem->mkdir($this->getTargetDirectory().'/'.$subDirectory);
-        $coverName = substr($hash, 8).'.'.$cover->guessExtension();
+        $coverName = $hash.'.'.$cover->guessExtension();
         $cover->move($this->getTargetDirectory().'/'.$subDirectory, $coverName);
         return $subDirectory.'/'.$coverName;
     }
