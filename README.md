@@ -21,6 +21,7 @@ $ yarn install
 $ yarn encore dev
 $ php bin/console make:migration
 $ php bin/console doctrine:migrations:migrate
+$ php bin/console fos:user:create
 ```
 
 Usage
