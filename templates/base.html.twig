@@ -2,10 +2,8 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <title>{% block title %}Personal Library{% endblock %}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
     </head>
     <body>
         {% block body %}
@@ -13,10 +11,10 @@
                 <nav class="navbar bg-dark">
                     <a class="navbar-brand mr-auto" href="/">Personal Library</a>
                     {% if is_granted('ROLE_USER') %}
-                        <div class="navbar-text text-light">{{ app.user.username }}</div>
-                        <a class="navbar-nav ml-1" href="/logout">Logout</a>
+                        <div>{{ app.user.username }}</div>
+                        <a href="/logout">Logout</a>
                     {% else %}
-                        <a class="navbar-nav" href="/login">Login</a>
+                        <a href="/login">Login</a>
                     {% endif %}
                 </nav>
             {% endblock %}
